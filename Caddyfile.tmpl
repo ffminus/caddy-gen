@@ -1,0 +1,28 @@
+{{ range $host, $services := groupByLabel $ "virtual.host" }}
+
+{{ $emails := keys (groupByLabel $services "virtual.tls-email") }}
+{{ $isTlsOn := ge (len $emails) 1 }}
+
+{{ if not $isTlsOn }}http://{{ end }}{{ $host }}, {{ if not $isTlsOn }}http://{{ end }}{{ $host }}/* {
+    {{ if $isTlsOn }}
+    tls {{ index $emails 0 }}
+    {{ end }}
+
+    encode zstd gzip
+
+    log {
+        format single_field common_log
+    }
+
+    reverse_proxy {
+        lb_policy round_robin
+
+        {{ range $service := $services }}
+        {{ $port := or (index $service.Labels "virtual.port") 80 }}
+        {{ range $_, $network := $service.Networks }}
+        to {{ $network.IP }}:{{ $port }}
+        {{ end }}
+        {{ end }}
+    }
+}
+{{ end }}
