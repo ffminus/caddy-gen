@@ -10,6 +10,8 @@ RUN curl -L "https://github.com/jwilder/docker-gen/releases/download/${DOCKER_GE
 # -------------------------------- Main ---------------------------------------
 FROM caddy:2.0.0-alpine
 
+LABEL maintainer="ffminus <ffminus@protonmail.com>"
+
 WORKDIR /etc/caddy
 
 COPY Caddyfile.tmpl docker-gen.cfg entrypoint.sh ./
