@@ -39,7 +39,7 @@ services:
             - virtual.host=www.localhost # Service address
 ```
 
-Run `docker-compose up` from your project directory to start both proxy and service.
+Run `docker-compose up` from your project directory to start both proxy and service.  
 The test service can be accessed from your browser at http://www.localhost
 
 
